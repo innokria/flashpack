@@ -1,4 +1,4 @@
-name: Create Github release
+name: Create Github and trigger PyPI release
 
 on:
   workflow_dispatch:
