@@ -62,7 +62,63 @@ pipeline.save_pretrained_flashpack(
 # Load directly from flashpack directory or repository
 pipeline = FlashPackMyPipeline.from_pretrained_flashpack("my/flashpack-repository")
 ```
+### Kaggle ###
+```
+# Install FlashPack (if not already done)
+# !pip install git+https://github.com/innokria/flashpack.git
 
+import torch
+import torch.nn as nn
+from flashpack import FlashPackMixin
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+device ="cpu"
+
+#MDLT
+class model(nn.Module,FlashPackMixin):
+    def __init__(self):
+        super().__init__()
+        self.x = nn.Parameter(torch.Tensor([1.0,2.0]))
+
+    def forward(self,x):
+        o= self.x + x
+        return o
+
+I = model().to(device)
+In = torch.Tensor([1.0,2.0])
+E= torch.Tensor([10.0,20.0])
+
+criterion= nn.MSELoss()
+optimizer = optim.Adam(I.parameters(),lr= .01)
+                
+max_epoch= 5000
+tolerance = 1e-6
+
+for epoch in range (1,max_epoch+1):
+    optimizer.zero_grad()
+    O= I(In).to(device)
+    loss = criterion(E,O)
+    loss.backward()
+    optimizer.step()
+    if(loss< tolerance):
+        print("we did it")
+        break
+
+print(I.x)
+
+
+I.save_flashpack("model.flashpack",target_dtype=torch.float32)
+
+# Load model using FlashPack API
+loaded_module = I.from_flashpack("model.flashpack")
+
+print("Original parameter:", I.x)
+print("Loaded parameter:", loaded_module.x)
+
+
+```
 ### Vanilla PyTorch
 
 ```py
@@ -89,3 +145,4 @@ model = nn.Module(...)
 pack_to_file(model, flashpack_path)  # write state dict to file
 assign_from_file(model, flashpack_path)  # load state dict from file
 ```
+
