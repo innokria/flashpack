@@ -119,6 +119,20 @@ print("Loaded parameter:", loaded_module.x)
 
 
 ```
+## Kaggle OUTPUT
+```
+| Step                             | What it does                                                  | Time              |
+| -------------------------------- | ------------------------------------------------------------- | ----------------- |
+| **build_index: 10.90µs**         | Scans model parameters and builds index                       | Ultra-fast        |
+| **create_memmap: 233.28µs**      | Creates an on-disk memory-mapped file for large tensors       | Very fast         |
+| **copy_to_memmap: 3.50ms**       | Copies tensors to file via efficient mmap write               | Excellent speed   |
+| **flush_payload: 5.83ms**        | Final flush of binary data to disk                            | Great performance |
+| **append_footer: 751.49µs**      | Writes metadata (dtype, shape, offsets)                       | Very small cost   |
+| **atomic_rename: 45.43µs**       | Final rename to ensure atomic save                            | Instant           |
+| **read_metadata + mmap_payload** | Loading phase – reads metadata and memory maps file           | ~0.2ms total      |
+| **cpu_from_memmap + assign**     | Loads tensors directly from mmap without full deserialization | ~100µs            |
+
+```
 ### Vanilla PyTorch
 
 ```py
@@ -145,4 +159,5 @@ model = nn.Module(...)
 pack_to_file(model, flashpack_path)  # write state dict to file
 assign_from_file(model, flashpack_path)  # load state dict from file
 ```
+
 
