@@ -120,7 +120,7 @@ print("Loaded parameter:", loaded_module.x)
 
 ```
 ## Kaggle OUTPUT
-```
+
 | Step                             | What it does                                                  | Time              |
 | -------------------------------- | ------------------------------------------------------------- | ----------------- |
 | **build_index: 10.90µs**         | Scans model parameters and builds index                       | Ultra-fast        |
@@ -132,7 +132,7 @@ print("Loaded parameter:", loaded_module.x)
 | **read_metadata + mmap_payload** | Loading phase – reads metadata and memory maps file           | ~0.2ms total      |
 | **cpu_from_memmap + assign**     | Loads tensors directly from mmap without full deserialization | ~100µs            |
 
-```
+
 ### Vanilla PyTorch
 
 ```py
@@ -159,5 +159,6 @@ model = nn.Module(...)
 pack_to_file(model, flashpack_path)  # write state dict to file
 assign_from_file(model, flashpack_path)  # load state dict from file
 ```
+
 
 
